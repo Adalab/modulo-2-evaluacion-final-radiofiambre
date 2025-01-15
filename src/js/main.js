@@ -7,6 +7,8 @@ const input = document.querySelector(".js-input");
 const searchButton = document.querySelector(".js-button");
 const favsList = document.querySelector(".js-favList");
 const resultsList = document.querySelector(".js-resultsList");
+const buttonDeleteFav = document.querySelector(".btnX"); // BORRAR
+// const buttonsDeleteFav = document.querySelectorAll(".btnX");
 
 // ARRAYS VACÍOS
 let searchResults = [];
@@ -27,7 +29,7 @@ function getShowFromAPI(event) {
         const img = show.images.jpg.image_url;
         const title = show.title;
         resultsList.innerHTML += `
-        <li class="card .js-card">
+        <li class="card">
             <img src="${img}" alt="">
             <h3>${title}</h3>
         </li>
@@ -77,6 +79,7 @@ function renderNewFav() {
   const lastAddedFavShow = favShowsArray[favShowsArray.length - 1];
   favsList.innerHTML += `
   <li class="card fav">
+      <button class="btnX">x</button>
       <img src="${lastAddedFavShow.img}" alt="">
       <h3>${lastAddedFavShow.title}</h3>
   </li>
@@ -116,6 +119,7 @@ function loadLocalStorage() {
     favShowsArray.forEach((favShow) =>
       favsList.innerHTML += `
       <li class="card fav">
+          <button class="btnX">x</button>
           <img src="${favShow.img}" alt="">
           <h3>${favShow.title}</h3>
       </li>
@@ -126,3 +130,22 @@ function loadLocalStorage() {
 }
 
 loadLocalStorage();
+
+
+
+// BONUS: BORRAR FAVORITOS
+function removeFavShow(event) {
+    // Eliminar clase fav  // OK
+    const parent = event.target.parentElement;
+    parent.classList.remove('fav');
+    console.log(parent);
+    // Eliminar del array
+
+}
+
+// Si el botón es dinámico (generado tras una acción como un fetch), usa delegación de eventos:
+document.body.addEventListener("click", (event) => {
+  if (event.target.classList.contains("btnX")) {
+    removeFavShow(event);
+  }
+});
