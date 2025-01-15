@@ -7,8 +7,7 @@ const input = document.querySelector(".js-input");
 const searchButton = document.querySelector(".js-button");
 const favsList = document.querySelector(".js-favList");
 const resultsList = document.querySelector(".js-resultsList");
-const buttonDeleteFav = document.querySelector(".btnX"); // BORRAR
-// const buttonsDeleteFav = document.querySelectorAll(".btnX");
+const buttonEmptyFavs = document.querySelector(".btnRemoveAll");
 
 // ARRAYS VACÍOS
 let searchResults = [];
@@ -65,14 +64,16 @@ searchButton.addEventListener("click", getShowFromAPI);
 
 
 
+// FUNCIÓN CACHEAR AVORITOS
 
+function setFavsInLocalStorage() {
+  localStorage.setItem('Favorite Shows:', JSON.stringify(favShowsArray)); 
+}
 
 
 
 // FUNCIÓN AÑADIR A FAVORITOS Y RENDERIZAR: EVENT LISTENER EN UL
 
-
-// FUNCIÓN RENDERIZAR FAVORITOS Y AÑADIR CLASE .FAV
 function renderFavs() {
   favsList.innerHTML = '';
   favShowsArray.forEach((favShow) =>
@@ -84,7 +85,6 @@ function renderFavs() {
   </li>
   `) // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
 }
-
 
 // FUNCIÓN CACHEAR FAVORITOS
 function setFavsInLocalStorage() {
@@ -126,7 +126,7 @@ function loadLocalStorage() {
     favShowsArray.forEach((favShow) =>
       favsList.innerHTML += `
       <li class="card fav">
-          <button class="btnX">x</button>
+          <button class="btnX">&#10006;</button>
           <img src="${favShow.img}" alt="">
           <h3>${favShow.title}</h3>
       </li>
@@ -166,3 +166,12 @@ document.body.addEventListener("click", (event) => {
     removeFavShow(event);
   }
 });
+
+
+
+// BOTÓN ELIMINAR TODOS LOS FAVORITOS
+function removeAllFavs() {
+    const noFavShows = document.querySelectorAll('.fav');
+}
+
+buttonEmptyFavs.addEventListener('click', removeAllFavs);
