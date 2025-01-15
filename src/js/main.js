@@ -5,7 +5,7 @@
 // ELEMENTOS HTML
 const input = document.querySelector(".js-input");
 const searchButton = document.querySelector(".js-button");
-const favList = document.querySelector(".js-favList");
+const favsList = document.querySelector(".js-favList");
 const resultsList = document.querySelector(".js-resultsList");
 
 // ARRAYS VACÍOS
@@ -62,7 +62,26 @@ searchButton.addEventListener("click", getShowFromAPI);
 // button.addEventListener("click", getNoImgShow);
 
 
-// FUNCIÓN DE FAVORITOS: EVENT LISTENER EN UL
+
+// FUNCIÓN CACHEAR AVORITOS
+
+function setFavsInLocalStorage() {
+  localStorage.setItem('Favorite Shows:', JSON.stringify(favShowsArray)); 
+}
+
+
+
+// FUNCIÓN AÑADIR A FAVORITOS Y RENDERIZAR: EVENT LISTENER EN UL
+
+function renderNewFav() {
+  const lastAddedFavShow = favShowsArray[favShowsArray.length - 1];
+  favsList.innerHTML += `
+  <li class="card fav">
+      <img src="${lastAddedFavShow.img}" alt="">
+      <h3>${lastAddedFavShow.title}</h3>
+  </li>
+  `; // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
+}
 
 resultsList.addEventListener('click', (event) => {
   // Encontrar el <li> más cercano al elemento clicado
@@ -80,5 +99,30 @@ resultsList.addEventListener('click', (event) => {
     }
     favShowsArray.push(favShow); // se añade con otra busqueda :)
     console.log('Array de favoritos:', favShowsArray);
+    renderNewFav();
+    setFavsInLocalStorage();
   }
 });
+
+
+
+// FUNCIÓN RENDERIZAR FAVS
+function loadLocalStorage() {
+  const savedFavShows = localStorage.getItem('Favorite Shows:');
+  if(savedFavShows) {
+    console.log('Hay datos en el LS');
+    favShowsArray = JSON.parse(savedFavShows);
+    console.log('Parsed from LS', favShowsArray)
+    favShowsArray.forEach((favShow) =>
+      favsList.innerHTML += `
+      <li class="card fav">
+          <img src="${favShow.img}" alt="">
+          <h3>${favShow.title}</h3>
+      </li>
+      `)
+  } else {
+    console.log('No hay datos en el LS');
+  }
+}
+
+loadLocalStorage();
