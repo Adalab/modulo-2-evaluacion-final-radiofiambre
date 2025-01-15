@@ -65,47 +65,55 @@ searchButton.addEventListener("click", getShowFromAPI);
 
 
 
-// FUNCIÓN CACHEAR AVORITOS
 
-function setFavsInLocalStorage() {
-  localStorage.setItem('Favorite Shows:', JSON.stringify(favShowsArray)); 
-}
 
 
 
 // FUNCIÓN AÑADIR A FAVORITOS Y RENDERIZAR: EVENT LISTENER EN UL
 
-function renderNewFav() {
-  const lastAddedFavShow = favShowsArray[favShowsArray.length - 1];
+
+// FUNCIÓN RENDERIZAR FAVORITOS Y AÑADIR CLASE .FAV
+function renderFavs() {
+  favsList.innerHTML = '';
+  favShowsArray.forEach((favShow) =>
   favsList.innerHTML += `
   <li class="card fav">
       <button class="btnX">x</button>
-      <img src="${lastAddedFavShow.img}" alt="">
-      <h3>${lastAddedFavShow.title}</h3>
+      <img src="${favShow.img}" alt="">
+      <h3>${favShow.title}</h3>
   </li>
-  `; // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
+  `) // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
 }
 
-resultsList.addEventListener('click', (event) => {
+
+// FUNCIÓN CACHEAR FAVORITOS
+function setFavsInLocalStorage() {
+  localStorage.setItem('Favorite Shows:', JSON.stringify(favShowsArray)); 
+} // OK
+
+
+// FUNCIÓN ACTUALIZAR ARRAY DE FAVORITOS
+function updatefavShowsArray(event) {
   // Encontrar el <li> más cercano al elemento clicado
   const clickedShow = event.target.closest('li');
   // Verificar que el clic ocurrió dentro de un <li> y que no ha pulsado la renderlist
   if (clickedShow !== resultsList) {
-    clickedShow.classList.add('fav'); // añadimos la clase fav
-    const clickedShowImg = clickedShow.querySelector('img').src; // extraigo la img
-    const clickedShowTitle = clickedShow.querySelector('h3').textContent;  // extraigo el título
-    console.log(clickedShowImg);
-    console.dir(clickedShowTitle);
+    const clickedShowImg = clickedShow.querySelector('img').src;
+    const clickedShowTitle = clickedShow.querySelector('h3').textContent;
     const favShow = {
       img: clickedShowImg,
       title: clickedShowTitle,
     }
     favShowsArray.push(favShow); // se añade con otra busqueda :)
-    console.log('Array de favoritos:', favShowsArray);
-    renderNewFav();
-    setFavsInLocalStorage();
+    console.log('Array de favoritos:', favShowsArray); // OK
+    renderFavs();
+    setFavsInLocalStorage(); // OK
   }
-});
+}
+
+
+// EJECUTAR FUNCIÓN DE ACTUALIZAR FAVORITOS (ARRAY, CLASE, MOSTRAR Y CACHEAR)
+resultsList.addEventListener('click', updatefavShowsArray);
 
 
 
@@ -113,9 +121,8 @@ resultsList.addEventListener('click', (event) => {
 function loadLocalStorage() {
   const savedFavShows = localStorage.getItem('Favorite Shows:');
   if(savedFavShows) {
-    console.log('Hay datos en el LS');
     favShowsArray = JSON.parse(savedFavShows);
-    console.log('Parsed from LS', favShowsArray)
+    console.log('Datos en LS:', favShowsArray)
     favShowsArray.forEach((favShow) =>
       favsList.innerHTML += `
       <li class="card fav">
@@ -125,21 +132,31 @@ function loadLocalStorage() {
       </li>
       `)
   } else {
-    console.log('No hay datos en el LS');
+    console.log('No hay datos en LS');
   }
-}
+} // OK
 
-loadLocalStorage();
+loadLocalStorage(); // OK
 
 
 
 // BONUS: BORRAR FAVORITOS
 function removeFavShow(event) {
     // Eliminar clase fav  // OK
-    const parent = event.target.parentElement;
-    parent.classList.remove('fav');
-    console.log(parent);
+    const noFavShow = event.target.parentElement;
+    noFavShow.classList.remove('fav');
     // Eliminar del array
+    const noFavShowTitle = noFavShow.querySelector('h3').textContent;
+    console.log(noFavShowTitle);
+    const noFavShowIndex = favShowsArray.findIndex((favShow) => favShow.title === noFavShowTitle);
+    console.log(noFavShowIndex);
+    console.log(favShowsArray);
+    favShowsArray.splice(noFavShowIndex, 1);
+    console.log(favShowsArray);
+    // Actualizar listado favs
+    renderFavs();
+    // Actualizar ls
+    setFavsInLocalStorage();
 
 }
 
