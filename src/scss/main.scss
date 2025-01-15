@@ -1,4 +1,4 @@
-// @import 'core/variables';
+@import 'core/variables';
 // @import 'core/reset';
 // @import 'components/code';
 // @import 'components/links';
@@ -6,3 +6,57 @@
 // @import 'layout/header';
 // @import 'layout/footer';
 // @import 'pages/index';
+
+* {
+    font-family: $font-main;
+}
+
+body {
+    width: 100%;
+}
+
+header {
+    text-align: center;
+}
+
+.display {
+    display: flex;
+    flex-direction: row;
+    gap: 75px;
+    .favouritesColumn {
+        width: 310px; // REVISAR CUANDO SE HACE BUSQUEDA SE ESTRECHA
+        text-align: center;
+        background-color: gray;
+        .favList {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    }
+    .resultsColumn {
+        text-align: center;
+        background-color: gray;
+        .resultsList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+    }
+}
+
+.card {
+    width: 225px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 15px;
+    background-color: white;
+    color: black;
+    // padding: 30px;
+}
+
+.fav {
+    background-color: black;
+    color: white;
+}
