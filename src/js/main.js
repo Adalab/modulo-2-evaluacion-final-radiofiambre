@@ -7,8 +7,8 @@
 // ELEMENTOS HTML
 const input = document.querySelector(".js-input");
 const searchButton = document.querySelector(".js-btnSearch");
-const favsList = document.querySelector(".js-favList");
-const resultsList = document.querySelector(".js-resultsList");
+let favsList = document.querySelector(".js-favList");
+let resultsList = document.querySelector(".js-resultsList");
 const buttonEmptyFavs = document.querySelector(".js-btnRemoveAll");
 const resetButton = document.querySelector(".js-btnReset");
 
@@ -51,12 +51,11 @@ function getShowFromAPI(event) {
             `;
         }
       }
+      manageFavClassInResultsList(); // debe ir dentro del for porque está trabando en asíncrono
     });
 }
 
 searchButton.addEventListener("click", getShowFromAPI);
-
-
 
 // FUNCIÓN RENDERIZAR EN FAVSLIST
 
@@ -69,7 +68,28 @@ function updateFavList() {
         <img src="${favShow.img}" alt="">
         <h3>${favShow.title}</h3>
     </li>
-    `) // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
+    `)
+}
+
+
+
+// Añadir o quitar clase favResult de resultsList
+
+function manageFavClassInResultsList() {
+  // cogerlo del array searchResults, no del DOM
+  const resultsListShowsTitles = resultsList.querySelectorAll('h3');
+  resultsListShowsTitles.forEach((resultsListShowTitle) => {
+    // Coger texto del título
+    const showTitleText = resultsListShowTitle.textContent;
+    const exists = favShowsArray.find(
+      (favShow) => favShow.title === showTitleText
+    );
+    if (exists) {
+      resultsListShowTitle.parentElement.classList.add('favResult');
+    } else {
+      resultsListShowTitle.parentElement.classList.remove('favResult');
+    }
+  });
 }
 
 
@@ -96,22 +116,11 @@ function selectFavShow(event) {
     favShowsArray.push(favShow);
     updateFavList();
     setFavsInLocalStorage();
+    manageFavClassInResultsList();
   }
 }
 
 resultsList.addEventListener('click', selectFavShow);
-
-// Añadir o quitar clase favResult de resultsList
-function manageFavClassInResultsList() {
-  const resultListShowTitles = resultsList.querySelectorAll('h3').textContent;
-  favShowsArray.find((favShow) => favShow.title === resultListShowTitles);
-  if (resultListShowTitles){
-    favShow.classList.add('.favResult');
-  }
-}
-
-// Actualizar constantemente
-manageFavClassInResultsList();
 
 
 
@@ -143,6 +152,8 @@ function removeFavShow(noFavShow) {
   updateFavList();
   // Actualizar ls
   setFavsInLocalStorage();
+  // Actualizar favs de resultsList
+  manageFavClassInResultsList();
 }
 
 
@@ -174,5 +185,18 @@ function removeAllFavShows() {
 buttonEmptyFavs.addEventListener('click', removeAllFavShows);
 
 
+// BOTÓN RESET
 
-// BOTÓN DE RESET
+function resetAll() {
+  // actualice el array de favoritos
+  // se eliminen todos los favoritos
+  // se elimine de localstorage
+  // quite la clase de favoritos
+  removeAllFavShows();
+  // se eliminen los resultados de búsqueda
+  resultsList = '';
+  // se limpie el texto del input
+  input.value = '';
+}
+
+resetButton.addEventListener('click', resetAll);
