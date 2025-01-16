@@ -27,40 +27,28 @@ function getShowFromAPI(event) {
       for (const show of searchResults) {
         const img = show.images.jpg.image_url;
         const title = show.title;
-        resultsList.innerHTML += `
-        <li class="card">
-            <img src="${img}" alt="">
-            <h3>${title}</h3>
-        </li>
-        `;
+        const noImg = 'https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png';
+        const newImg = 'https://placehold.co/225?text=Sin+imagen&font=roboto.png';
+        if (img === noImg) {
+          resultsList.innerHTML += `
+            <li class="card">
+                <img src="${newImg}" alt="">
+                <h3>${title}</h3>
+            </li>
+            `;
+        } else {
+          resultsList.innerHTML += `
+            <li class="card">
+                <img src="${img}" alt="">
+                <h3>${title}</h3>
+            </li>
+            `;
+        }
       }
     });
 } // OK
 
 searchButton.addEventListener("click", getShowFromAPI);
-
-// FUNCIÓN SUSTITUIR IMAGEN ROTA
-// const apiURL = `https://api.jikan.moe/v4/anime`;
-// const noIMG = 'https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png';
-
-// function getNoImgShow() {
-//   fetch(apiURL)
-//     .then(response => response.json())
-//     .then(data => {
-//       const searchResults = data.data;
-//       for (const show of searchResults) {
-//         const img = show.images.jpg.image_url;
-
-//         // Verificar si la URL de la imagen contiene la cadena específica
-//         if (img.includes('apple-touch-icon-256')) {
-//           console.log(`Anime sin imagen válida:`, show.title);
-//         }
-//       }
-//     })
-//     .catch(error => console.error("Error al obtener datos:", error));
-// }
-
-// button.addEventListener("click", getNoImgShow);
 
 
 
@@ -85,6 +73,8 @@ function renderFavs() {
   </li>
   `) // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
 }
+
+
 
 // FUNCIÓN CACHEAR FAVORITOS
 function setFavsInLocalStorage() {
