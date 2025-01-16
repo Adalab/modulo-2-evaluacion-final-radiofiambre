@@ -1,7 +1,124 @@
-// body {
-//   padding: 2rem;
-//   height: 100vh;
-//   background-image: url('../images/bg-adalab.png');
-//   background-color: $color-bg;
-//   font-family: $font-main;
-// }
+.searchSection {
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+    .input {
+        width: 250px;
+    }
+    .searchSectionBtn {
+        height: 40px;
+        width: 100px;
+        font-size: 20px;
+        border:none;
+        box-shadow: 1px 1px 2px 1px rgb(0 0 0 / 50%);
+        font-weight: bold;
+        border-radius: 10%;
+        margin-left: 10px;
+    }
+}
+
+.display {
+    display: flex;
+    gap: 75px;
+    margin: 60px;
+    .favouritesColumn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 30px;
+        border: 2px solid rgb(229, 229, 229);
+        border-radius: 15px;
+        width: 20%;
+        .favList {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .btnRemoveAll {
+            height: 40px;
+            width: 100px;
+            font-size: 20px;
+            border:none;
+            box-shadow: 1px 1px 2px 1px rgb(0 0 0 / 50%);
+            font-weight: bold;
+            border-radius: 10%;
+            margin: 10px;
+        }
+    }
+    .resultsColumn {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        border: 2px solid rgb(229, 229, 229);
+        padding: 30px;
+        width: 70%;
+        border-radius: 15px;
+        .resultsList {
+            margin: 0px 50px 0px 50px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 30px;
+        }
+    }
+}
+
+.card {
+    width: 225px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 15px;
+    background-color: white;
+    color: black;
+    box-shadow: 1px 1px 2px 1px rgb(0 0 0 / 50%);
+    position: relative;
+    img {
+        border-radius: 15px;
+    }
+    h3 {
+        margin: 15px;
+        font-size: 22px;
+    }
+}
+
+.favResult {
+    background-color: black;
+    color: white;
+}
+
+.fav {
+    width: 250px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    background-color: black;
+    color: white;
+    img{
+        width: 120px;
+    }
+    h3 {
+        margin: 15px;
+        margin-top: 30px;
+        font-size: 16px;
+    }
+    .btnX {
+        height: 25px;
+        width: 25px;
+        border:none;
+        box-shadow: 1px 1px 2px 1px rgb(0 0 0 / 50%);
+        font-weight: bold;
+        border-radius: 50%;
+        margin: 10px;
+        position: absolute;
+        right: 3px;
+        top: 3px;
+    }
+}
