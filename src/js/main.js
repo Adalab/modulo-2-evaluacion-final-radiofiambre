@@ -6,11 +6,11 @@
 
 // ELEMENTOS HTML
 const input = document.querySelector(".js-input");
-const searchButton = document.querySelector(".js-button");
+const searchButton = document.querySelector(".js-btnSearch");
 const favsList = document.querySelector(".js-favList");
 const resultsList = document.querySelector(".js-resultsList");
-const buttonEmptyFavs = document.querySelector(".btnRemoveAll");
-
+const buttonEmptyFavs = document.querySelector(".js-btnRemoveAll");
+const resetButton = document.querySelector(".js-btnReset");
 
 
 // ARRAYS VACÍOS
@@ -58,18 +58,18 @@ searchButton.addEventListener("click", getShowFromAPI);
 
 
 
-// FUNCIÓN AÑADIR A FAVORITOS Y RENDERIZAR: EVENT LISTENER EN UL
+// FUNCIÓN RENDERIZAR EN FAVSLIST
 
-function renderFavs() {
+function updateFavList() {
   favsList.innerHTML = '';
   favShowsArray.forEach((favShow) => 
   favsList.innerHTML += `
-  <li class="card fav">
-      <button class="btnX">x</button>
-      <img src="${favShow.img}" alt="">
-      <h3>${favShow.title}</h3>
-  </li>
-  `) // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
+    <li class="card fav">
+        <button class="btnX">&#10006;</button>
+        <img src="${favShow.img}" alt="">
+        <h3>${favShow.title}</h3>
+    </li>
+    `) // DECIR QUE NO AÑADA SI YA EXISTE EN EL ARRAY
 }
 
 
@@ -80,7 +80,7 @@ function setFavsInLocalStorage() {
 }
 
 
-// AÑADIR CLASE AQUI
+
 // FUNCIÓN ACTUALIZAR ARRAY DE FAVORITOS
 function selectFavShow(event) {
   // Encontrar el <li> más cercano al elemento clicado
@@ -94,14 +94,24 @@ function selectFavShow(event) {
       title: clickedShowTitle,
     }
     favShowsArray.push(favShow);
-    renderFavs();
+    updateFavList();
     setFavsInLocalStorage();
   }
 }
 
-
-
 resultsList.addEventListener('click', selectFavShow);
+
+// Añadir o quitar clase favResult de resultsList
+function manageFavClassInResultsList() {
+  const resultListShowTitles = resultsList.querySelectorAll('h3').textContent;
+  favShowsArray.find((favShow) => favShow.title === resultListShowTitles);
+  if (resultListShowTitles){
+    favShow.classList.add('.favResult');
+  }
+}
+
+// Actualizar constantemente
+manageFavClassInResultsList();
 
 
 
@@ -110,14 +120,7 @@ function loadLocalStorage() {
   const savedFavShows = localStorage.getItem('Favorite Shows:');
   if(savedFavShows) {
     favShowsArray = JSON.parse(savedFavShows);
-    favShowsArray.forEach((favShow) =>
-      favsList.innerHTML += `
-      <li class="card fav">
-          <button class="btnX">&#10006;</button>
-          <img src="${favShow.img}" alt="">
-          <h3>${favShow.title}</h3>
-      </li>
-      `)
+    updateFavList();
   }
 }
 
@@ -129,15 +132,15 @@ loadLocalStorage();
 // BONUS: BORRAR FAVORITOS
 
 // De un show favorito, eliminar la clase, quitar del array y actualizar LS
-function removeFavShowFromArray(noFavShow) {
+function removeFavShow(noFavShow) {
   // Quitar clase .fav
-  noFavShow.classList.remove('fav');
+  noFavShow.classList.remove('fav');  
   // Eliminar del array
   const noFavShowTitle = noFavShow.querySelector('h3').textContent;
   const noFavShowIndex = favShowsArray.findIndex((favShow) => favShow.title === noFavShowTitle);
   favShowsArray.splice(noFavShowIndex, 1);
   // Actualizar listado favs
-  renderFavs();
+  updateFavList();
   // Actualizar ls
   setFavsInLocalStorage();
 }
@@ -146,7 +149,7 @@ function removeFavShowFromArray(noFavShow) {
 // Eliminar un solo show favorito
 function removeOneFavShow(event) {
     const noFavShow = event.target.parentElement;
-    removeFavShowFromArray(noFavShow);
+    removeFavShow(noFavShow);
 }
 
 // Si el botón es dinámico (generado tras una acción como un fetch), usa delegación de eventos:
@@ -164,8 +167,12 @@ document.body.addEventListener("click", (event) => {
 function removeAllFavShows() {
     const noFavShows = document.querySelectorAll('.fav');
     noFavShows.forEach((noFavShow) => {
-      removeFavShowFromArray(noFavShow);
+      removeFavShow(noFavShow);
     });
 }
 
 buttonEmptyFavs.addEventListener('click', removeAllFavShows);
+
+
+
+// BOTÓN DE RESET
