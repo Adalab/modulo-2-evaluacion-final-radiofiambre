@@ -161,7 +161,24 @@ document.body.addEventListener("click", (event) => {
 
 // BOTÓN ELIMINAR TODOS LOS FAVORITOS
 function removeAllFavs() {
+    console.log('He clicado en Vaciar'); // OK
     const noFavShows = document.querySelectorAll('.fav');
+    noFavShows.forEach((noFavShow) => {
+    noFavShow.classList.remove('fav');
+    console.log(noFavShows);
+    const noFavShowTitle = noFavShow.querySelector('h3').textContent;
+    console.log(noFavShowTitle);
+    const noFavShowIndex = favShowsArray.findIndex((favShow) => favShow.title === noFavShowTitle);
+    console.log(noFavShowIndex);
+    console.log(favShowsArray);
+    favShowsArray.splice(noFavShowIndex, 1);
+    console.log(favShowsArray);
+    });
+
+    // Actualizar listado favs
+    renderFavs();
+    // Actualizar ls
+    setFavsInLocalStorage();
 }
 
 buttonEmptyFavs.addEventListener('click', removeAllFavs);
