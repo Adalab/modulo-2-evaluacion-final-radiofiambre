@@ -2,6 +2,8 @@
 
 // const { render } = require("sass");
 
+
+
 // ELEMENTOS HTML
 const input = document.querySelector(".js-input");
 const searchButton = document.querySelector(".js-button");
@@ -9,9 +11,13 @@ const favsList = document.querySelector(".js-favList");
 const resultsList = document.querySelector(".js-resultsList");
 const buttonEmptyFavs = document.querySelector(".btnRemoveAll");
 
+
+
 // ARRAYS VACÍOS
 let searchResults = [];
 let favShowsArray = [];
+
+
 
 // FUNCIÓN DE BÚSQUEDA
 
@@ -46,17 +52,9 @@ function getShowFromAPI(event) {
         }
       }
     });
-} // OK
+}
 
 searchButton.addEventListener("click", getShowFromAPI);
-
-
-
-// FUNCIÓN CACHEAR AVORITOS
-
-function setFavsInLocalStorage() {
-  localStorage.setItem('Favorite Shows:', JSON.stringify(favShowsArray)); 
-}
 
 
 
@@ -64,7 +62,7 @@ function setFavsInLocalStorage() {
 
 function renderFavs() {
   favsList.innerHTML = '';
-  favShowsArray.forEach((favShow) =>
+  favShowsArray.forEach((favShow) => 
   favsList.innerHTML += `
   <li class="card fav">
       <button class="btnX">x</button>
@@ -76,14 +74,15 @@ function renderFavs() {
 
 
 
-// FUNCIÓN CACHEAR FAVORITOS
+// FUNCIÓN CACHEAR FAVORITOS DESDE EL ARRAY
 function setFavsInLocalStorage() {
   localStorage.setItem('Favorite Shows:', JSON.stringify(favShowsArray)); 
-} // OK
+}
 
 
+// AÑADIR CLASE AQUI
 // FUNCIÓN ACTUALIZAR ARRAY DE FAVORITOS
-function updatefavShowsArray(event) {
+function selectFavShow(event) {
   // Encontrar el <li> más cercano al elemento clicado
   const clickedShow = event.target.closest('li');
   // Verificar que el clic ocurrió dentro de un <li> y que no ha pulsado la renderlist
@@ -94,16 +93,15 @@ function updatefavShowsArray(event) {
       img: clickedShowImg,
       title: clickedShowTitle,
     }
-    favShowsArray.push(favShow); // se añade con otra busqueda :)
-    console.log('Array de favoritos:', favShowsArray); // OK
+    favShowsArray.push(favShow);
     renderFavs();
-    setFavsInLocalStorage(); // OK
+    setFavsInLocalStorage();
   }
 }
 
 
-// EJECUTAR FUNCIÓN DE ACTUALIZAR FAVORITOS (ARRAY, CLASE, MOSTRAR Y CACHEAR)
-resultsList.addEventListener('click', updatefavShowsArray);
+
+resultsList.addEventListener('click', selectFavShow);
 
 
 
@@ -112,7 +110,6 @@ function loadLocalStorage() {
   const savedFavShows = localStorage.getItem('Favorite Shows:');
   if(savedFavShows) {
     favShowsArray = JSON.parse(savedFavShows);
-    console.log('Datos en LS:', favShowsArray)
     favShowsArray.forEach((favShow) =>
       favsList.innerHTML += `
       <li class="card fav">
@@ -121,64 +118,54 @@ function loadLocalStorage() {
           <h3>${favShow.title}</h3>
       </li>
       `)
-  } else {
-    console.log('No hay datos en LS');
   }
-} // OK
+}
 
-loadLocalStorage(); // OK
+// Cargar el LS siempre que se abra la página
+loadLocalStorage();
 
 
 
 // BONUS: BORRAR FAVORITOS
-function removeFavShow(event) {
-    // Eliminar clase fav  // OK
-    const noFavShow = event.target.parentElement;
-    noFavShow.classList.remove('fav');
-    // Eliminar del array
-    const noFavShowTitle = noFavShow.querySelector('h3').textContent;
-    console.log(noFavShowTitle);
-    const noFavShowIndex = favShowsArray.findIndex((favShow) => favShow.title === noFavShowTitle);
-    console.log(noFavShowIndex);
-    console.log(favShowsArray);
-    favShowsArray.splice(noFavShowIndex, 1);
-    console.log(favShowsArray);
-    // Actualizar listado favs
-    renderFavs();
-    // Actualizar ls
-    setFavsInLocalStorage();
 
+// De un show favorito, eliminar la clase, quitar del array y actualizar LS
+function removeFavShowFromArray(noFavShow) {
+  // Quitar clase .fav
+  noFavShow.classList.remove('fav');
+  // Eliminar del array
+  const noFavShowTitle = noFavShow.querySelector('h3').textContent;
+  const noFavShowIndex = favShowsArray.findIndex((favShow) => favShow.title === noFavShowTitle);
+  favShowsArray.splice(noFavShowIndex, 1);
+  // Actualizar listado favs
+  renderFavs();
+  // Actualizar ls
+  setFavsInLocalStorage();
+}
+
+
+// Eliminar un solo show favorito
+function removeOneFavShow(event) {
+    const noFavShow = event.target.parentElement;
+    removeFavShowFromArray(noFavShow);
 }
 
 // Si el botón es dinámico (generado tras una acción como un fetch), usa delegación de eventos:
 document.body.addEventListener("click", (event) => {
   if (event.target.classList.contains("btnX")) {
-    removeFavShow(event);
+    removeOneFavShow(event);
   }
-});
+})
 
 
 
 // BOTÓN ELIMINAR TODOS LOS FAVORITOS
-function removeAllFavs() {
-    console.log('He clicado en Vaciar'); // OK
+
+// Eliminar para todos los shows favoritos
+function removeAllFavShows() {
     const noFavShows = document.querySelectorAll('.fav');
     noFavShows.forEach((noFavShow) => {
-    noFavShow.classList.remove('fav');
-    console.log(noFavShows);
-    const noFavShowTitle = noFavShow.querySelector('h3').textContent;
-    console.log(noFavShowTitle);
-    const noFavShowIndex = favShowsArray.findIndex((favShow) => favShow.title === noFavShowTitle);
-    console.log(noFavShowIndex);
-    console.log(favShowsArray);
-    favShowsArray.splice(noFavShowIndex, 1);
-    console.log(favShowsArray);
+      removeFavShowFromArray(noFavShow);
     });
-
-    // Actualizar listado favs
-    renderFavs();
-    // Actualizar ls
-    setFavsInLocalStorage();
 }
 
-buttonEmptyFavs.addEventListener('click', removeAllFavs);
+buttonEmptyFavs.addEventListener('click', removeAllFavShows);
